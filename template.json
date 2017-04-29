@@ -1,0 +1,74 @@
+{
+  "min_packer_version": "1.0.0",
+  "builders": [
+    {
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/kickstart.cfg<enter><wait>"
+      ],
+      "boot_wait": "30s",
+      "disk_size": 20280,
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "RedHat_64",
+      "http_directory": "http",
+      "headless": true,
+      "iso_checksum": "27bd866242ee058b7a5754e83d8ee8403e216b93d130d800852a96f41c34d86a",
+      "iso_checksum_type": "sha256",
+      "iso_url": "http://mirror.rackspace.com/CentOS/7/isos/x86_64/CentOS-7-x86_64-Minimal-1611.iso",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo -n 'vagrant' | sudo -S sh 'shutdown.sh'",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_username": "vagrant",
+      "ssh_wait_timeout": "10000s",
+      "type": "virtualbox-iso",
+      "keep_registered": false,
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "1024"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ],
+      "virtualbox_version_file": ".vbox_version"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "compression_level": 9,
+        "keep_input_artifact": false,
+        "type": "vagrant"
+      }
+    ]
+  ],
+  "provisioners": [
+    {
+      "destination": "/tmp",
+      "source": "tests",
+      "type": "file"
+    },
+    {
+      "execute_command": "echo -n 'vagrant' | {{.Vars}} sudo -E -S sh '{{ .Path }}'",
+      "expect_disconnect": true,
+      "skip_clean": false,
+      "start_retry_timeout": "10m",
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/reboot.sh",
+        "scripts/ssh_setup.sh",
+        "scripts/vagrant.sh",
+        "scripts/virtualbox.sh",
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh",
+        "scripts/serverspec.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}

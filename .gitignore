@@ -1,0 +1,6 @@
+output*
+packer_cache
+*.hwm
+*.pwd
+*.pwi
+.vagrant
