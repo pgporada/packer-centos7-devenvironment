@@ -21,6 +21,10 @@ Build a new version of the vagrant on your local machine (Preferred if you don't
 Add a local build into vagrant as a vm named `test`
 
     vagrant box add packer_whatever_output --name test
+    # Once the vagrant box has been added as "test" you can use the local Vagrantfile
+    vagrant up
+    # You should see PENGUICON in the MOTD after logging in
+    vagrant ssh
 
 - - - -
 # Theme Music
