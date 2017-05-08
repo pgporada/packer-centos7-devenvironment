@@ -4,3 +4,4 @@ packer_cache
 *.pwd
 *.pwi
 .vagrant
+*.box
